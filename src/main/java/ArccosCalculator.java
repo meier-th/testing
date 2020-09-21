@@ -31,9 +31,9 @@ public class ArccosCalculator {
         if (Math.abs(arg) < 0.75)
             maxSeriesElement = 200;
         else if (Math.abs(arg) < 0.9)
-            maxSeriesElement = 800;
+            maxSeriesElement = 400;
         else
-            maxSeriesElement = 2500;
+            maxSeriesElement = 1000;
 
         double sum = Math.PI/2;
         for (int i = 0; i < maxSeriesElement; ++i)
