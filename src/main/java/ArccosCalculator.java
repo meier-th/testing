@@ -4,8 +4,6 @@ import java.math.MathContext;
 
 public class ArccosCalculator {
 
-    private final static int MAX_SERIES_ELEMENTS = 1000;
-
     private BigInteger nFactorial = BigInteger.ONE;
     private BigInteger twonFactorial = BigInteger.ONE;
 
@@ -28,8 +26,17 @@ public class ArccosCalculator {
             return 0;
         if (arg == -1)
             return Math.PI;
+
+        int maxSeriesElement;
+        if (Math.abs(arg) < 0.75)
+            maxSeriesElement = 200;
+        else if (Math.abs(arg) < 0.9)
+            maxSeriesElement = 800;
+        else
+            maxSeriesElement = 2500;
+
         double sum = Math.PI/2;
-        for (int i = 0; i < MAX_SERIES_ELEMENTS; ++i)
+        for (int i = 0; i < maxSeriesElement; ++i)
             sum -= calcSeriesElement(i, arg);
         return sum;
     }
