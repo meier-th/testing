@@ -1,45 +1,42 @@
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.Set;
+import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ArccosCalculatorTest {
 
-    private static final Set<Double> arccosArgs = Set.of(-1d, -0.95, -0.9, -0.85, -0.75, -0.7, 0d, 0.7, 0.75, 0.85, 0.9, 0.95, 1d);
-
-    private static boolean equalsWithPrecision(double value1, double value2, double precision) {
-        return Math.abs(value1 - value2) <= precision;
-    }
-
-    private static void runArccosTestWithPrecision(double precision) {
+    private static void runArccosTestWithPrecision(double arg, double precision) {
         ArccosCalculator calculator = new ArccosCalculator();
-        for (Double arg : arccosArgs)
-            assertTrue(equalsWithPrecision(Math.acos(arg), calculator.calcArccos(arg), precision));
+        assertEquals(Math.acos(arg), calculator.calcArccos(arg), precision);
     }
 
-    @Test
+    @ParameterizedTest
     @Tag("low")
     @DisplayName(value = "Arccos with low precision test")
-    public void testArccosLowPrec() {
-        runArccosTestWithPrecision(0.01);
+    @MethodSource("getDataSet")
+    public void testArccosLowPrec(Double value) {
+        runArccosTestWithPrecision(value, 0.01);
     }
 
-    @Test
+    @ParameterizedTest
     @Tag("medium")
     @DisplayName(value = "Arccos with med precision test")
-    public void testArccosMedPrec() {
-        runArccosTestWithPrecision(0.0001);
+    @MethodSource("getDataSet")
+    public void testArccosMedPrec(double value) {
+        runArccosTestWithPrecision(value, 0.0001);
     }
 
-    @Test
+    @ParameterizedTest
     @Tag("high")
     @DisplayName(value = "Arccos with high precision test")
-    public void testArccosHighPrec() {
-        runArccosTestWithPrecision(0.000001);
+    @MethodSource("getDataSet")
+    public void testArccosHighPrec(double value) {
+        runArccosTestWithPrecision(value, 0.000001);
     }
 
     @Test
@@ -50,6 +47,11 @@ public class ArccosCalculatorTest {
         assertThrows(IllegalArgumentException.class, () -> calculator.calcArccos(1.1));
         assertThrows(IllegalArgumentException.class, () -> calculator.calcArccos(-100));
         assertThrows(IllegalArgumentException.class, () -> calculator.calcArccos(-100));
+    }
+
+    public static Stream<Double> getDataSet() {
+        return Stream.of(-1d, -0.9999, -0.9998, -0.95, -0.9, -0.85, -0.75, -0.7, -0.1, -0.005, -0.000000001,
+                0d, 0.000000001, 0.005, 0.1, 0.7, 0.75, 0.85, 0.9, 0.95, 0.9998, 0.9999, 1d);
     }
 
 }
